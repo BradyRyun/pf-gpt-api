@@ -30,34 +30,34 @@ func GeneratePlan(c *gin.Context) {
 
 	dc := models.DataCollected{Email: input.Email}
 
-	exists, err := models.CheckIfEmailAlreadyExists("users", input.Email)
-	if err != nil {
-		log.Errorf(err.Error())
-		dr := models.CreateResponse(err, "An error occurred while retrieving data to firestore", nil)
+	exists, fsReadError := models.CheckIfEmailAlreadyExists("users", input.Email)
+	if fsReadError != nil {
+		log.Errorf(fsReadError.Error())
+		dr := models.CreateResponse(fsReadError, "An error occurred while retrieving data to firestore", nil)
 		c.JSON(http.StatusInternalServerError, dr)
 		return
 	}
 	if !exists {
-		_, err = models.WriteToFirestore("users", dc)
+		_, fsWriterErr := models.WriteToFirestore("users", dc)
 
-		if err != nil {
-			log.Errorf(err.Error())
-			dr := models.CreateResponse(err, "An error occurred while writing data to firestore", nil)
+		if fsWriterErr != nil {
+			log.Errorf(fsWriterErr.Error())
+			dr := models.CreateResponse(fsWriterErr, "An error occurred while writing data to firestore", nil)
 			c.JSON(http.StatusInternalServerError, dr)
 			return
 		}
 	}
 
 	prompt := models.PromptFromPlan(input)
-	content, err := services.SendPrompt(prompt)
+	content, sendPromptErr := services.SendPrompt(prompt)
 
-	if err != nil || content == "" {
-		log.Errorf(err.Error())
-		dr := models.CreateResponse(err, "An error occurred while sending data to chatgpt", nil)
+	if sendPromptErr != nil || content == "" {
+		log.Errorf(sendPromptErr.Error())
+		dr := models.CreateResponse(sendPromptErr, "An error occurred while sending data to chatgpt", nil)
 		c.JSON(http.StatusInternalServerError, dr)
 		return
 	}
 	services.SendEmail(content, input.Email)
-	dr := models.CreateResponse(err, "Success!", content)
+	dr := models.CreateResponse(nil, "Success!", content)
 	c.JSON(http.StatusOK, dr)
 }

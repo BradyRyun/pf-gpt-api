@@ -81,6 +81,6 @@ func PromptFromPlan(plan PlanInput) string {
 		strconv.Itoa(int(plan.TaxAdvantagedPercent)),
 		strconv.Itoa(int(plan.EFund)))
 	prompt += homePromptAddon
-	log.Println(prompt)
+	//log.Println(prompt)
 	return prompt
 }

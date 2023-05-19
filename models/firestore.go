@@ -22,7 +22,7 @@ type DataCollected struct {
 func ConnectFirestore() {
 	FSEnabled = os.Getenv("FS_ENABLED") == "true"
 	if !FSEnabled {
-		log.Println("Bypassing firestore client initialization")
+		log.Println("Firestore integration disabled")
 		return
 	}
 	// Set up Firestore client options
@@ -44,9 +44,8 @@ func ConnectFirestore() {
 }
 
 func ReadFromFirestore(collection string, id string) (*firestore.DocumentSnapshot, error) {
-	FSEnabled = os.Getenv("FS_ENABLED") == "true"
 	if !FSEnabled {
-		log.Println("Bypassing firestore client initialization")
+		log.Println("FS not enabled. No attempt to read data will be performed.")
 		return nil, nil
 	}
 	docRef := fc.Collection(collection).Doc(id)
@@ -63,9 +62,8 @@ func ReadFromFirestore(collection string, id string) (*firestore.DocumentSnapsho
 }
 
 func WriteToFirestore(collectionName string, doc interface{}) (string, error) {
-	FSEnabled = os.Getenv("FS_ENABLED") == "true"
 	if !FSEnabled {
-		log.Println("Bypassing firestore client initialization")
+		log.Println("FS not enabled. No attempt to write data will be performed.")
 		return "MOCK_ID", nil
 	}
 	data, _, err := fc.Collection(collectionName).Add(ctx, doc)
@@ -90,7 +88,7 @@ func UpdateFirestoreDocument(collectionName string, docId string, docData interf
 
 func CheckIfEmailAlreadyExists(collection string, email string) (bool, error) {
 	if !FSEnabled {
-		log.Println("Bypassing firestore client initialization")
+		log.Println("FS not enabled. No attempt to read email data will be performed.")
 		return false, nil
 	}
 	iter := fc.Collection(collection).Where("email", "==", email).Limit(1).Documents(ctx)

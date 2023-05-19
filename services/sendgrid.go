@@ -6,7 +6,6 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"log"
 	"os"
-	"strings"
 )
 
 var SendGridClient *sendgrid.Client
@@ -14,9 +13,9 @@ var SendGridEnabled bool
 
 func InitSendGrid() {
 	APIKey := os.Getenv("SENDGRID_API_KEY")
-	SendGridEnabled = strings.ToLower(os.Getenv("SG_ENABLED")) == "false"
+	SendGridEnabled = os.Getenv("SG_ENABLED") == "true"
 	if !SendGridEnabled {
-		log.Println("Sendgrid client will not be initialized. SG_ENABLED == false")
+		log.Println("SendGrid client disabled.")
 		return
 	}
 	if APIKey == "" {
@@ -28,6 +27,7 @@ func InitSendGrid() {
 
 func SendEmail(content string, toEmail string) bool {
 	if !SendGridEnabled {
+		log.Println("SendGrid is not enabled. No email will be sent.")
 		return true
 	}
 	fromEmail := os.Getenv("SENDGRID_FROM_EMAIL")

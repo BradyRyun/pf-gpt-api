@@ -26,9 +26,9 @@ import (
 )
 
 func main() {
-	err := godotenv.Load(".env")
+	dotEnvErr := godotenv.Load(".env")
 
-	if err != nil {
+	if dotEnvErr != nil {
 		log.Fatalf("Error loading .env file")
 	}
 
@@ -37,8 +37,8 @@ func main() {
 	services.InitChatGpt()
 	r := router.SetupRouter()
 
-	err = r.Run(":8080")
-	if err != nil {
+	routerError := r.Run(":8080")
+	if routerError != nil {
 		log.Fatal("Failed to start server...")
 	}
 }
