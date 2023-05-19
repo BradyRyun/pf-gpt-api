@@ -23,6 +23,7 @@ import (
 func GeneratePlan(c *gin.Context) {
 	var input models.PlanInput
 	if err := c.ShouldBindJSON(&input); err != nil {
+		log.Errorf(err.Error())
 		dr := models.CreateResponse(err, "Missing info to create a plan", nil)
 		c.JSON(http.StatusBadRequest, dr)
 		return

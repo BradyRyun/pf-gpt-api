@@ -25,6 +25,8 @@ type PlanInput struct {
 	Age                  uint    `json:"age"`
 	CCDebt               uint    `json:"ccdebt"`
 	CCInterest           float32 `json:"ccinterest"`
+	OtherDebt            uint    `json:"odebt"`
+	OtherInterest        float32 `json:"ointerest"`
 	Investments          uint    `json:"itotal"`
 	TaxAdvantagedPercent uint    `json:"tap"`
 	EFund                uint    `json:"efund"`
