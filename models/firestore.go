@@ -8,16 +8,23 @@ import (
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	"log"
+	"os"
 )
 
 var fc *firestore.Client
 var ctx context.Context
+var FSEnabled bool
 
 type DataCollected struct {
 	Email string
 }
 
 func ConnectFirestore() {
+	FSEnabled = os.Getenv("FS_ENABLED") == "true"
+	if !FSEnabled {
+		log.Println("Bypassing firestore client initialization")
+		return
+	}
 	// Set up Firestore client options
 	ctx = context.Background()
 	opt := option.WithCredentialsFile("./service-account.json")
@@ -37,6 +44,11 @@ func ConnectFirestore() {
 }
 
 func ReadFromFirestore(collection string, id string) (*firestore.DocumentSnapshot, error) {
+	FSEnabled = os.Getenv("FS_ENABLED") == "true"
+	if !FSEnabled {
+		log.Println("Bypassing firestore client initialization")
+		return nil, nil
+	}
 	docRef := fc.Collection(collection).Doc(id)
 	doc, err := docRef.Get(ctx)
 	if err != nil {
@@ -51,6 +63,11 @@ func ReadFromFirestore(collection string, id string) (*firestore.DocumentSnapsho
 }
 
 func WriteToFirestore(collectionName string, doc interface{}) (string, error) {
+	FSEnabled = os.Getenv("FS_ENABLED") == "true"
+	if !FSEnabled {
+		log.Println("Bypassing firestore client initialization")
+		return "MOCK_ID", nil
+	}
 	data, _, err := fc.Collection(collectionName).Add(ctx, doc)
 	id := data.ID
 	if err != nil {
@@ -72,6 +89,10 @@ func UpdateFirestoreDocument(collectionName string, docId string, docData interf
 }
 
 func CheckIfEmailAlreadyExists(collection string, email string) (bool, error) {
+	if !FSEnabled {
+		log.Println("Bypassing firestore client initialization")
+		return false, nil
+	}
 	iter := fc.Collection(collection).Where("email", "==", email).Limit(1).Documents(ctx)
 	for {
 		_, err := iter.Next()
