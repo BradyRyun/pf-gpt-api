@@ -1,0 +1,287 @@
+basePath: /
+definitions:
+  models.CreateNewsletterInput:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  models.DefaultResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  models.LoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.LoginResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+      token:
+        type: string
+    type: object
+  models.Newsletter:
+    properties:
+      description:
+        type: string
+      editorID:
+        type: string
+      name:
+        type: string
+      subscribers:
+        additionalProperties: true
+        type: object
+    type: object
+  models.NewsletterResponse:
+    properties:
+      error:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      newsletter:
+        $ref: '#/definitions/models.Newsletter'
+    type: object
+  models.NewsletterSubscriptionInput:
+    properties:
+      email:
+        type: string
+    type: object
+  models.RegisterInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:3000
+info:
+  contact:
+    email: brady@ryunengineering.com
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Allows users to subscribe/unsubscribe to newsletters. Login, signup,
+    and create for creators.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: STRV Newsletter API
+  version: 0.1.0
+paths:
+  /api/admin/newsletter/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a newsletter
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateNewsletterInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.NewsletterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Create newsletter
+      tags:
+      - user
+  /api/admin/user:
+    get:
+      consumes:
+      - application/json
+      description: Get this user's account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Retrieve current user
+      tags:
+      - user
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: Login to account
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Login
+      tags:
+      - user
+  /api/register:
+    post:
+      consumes:
+      - application/json
+      description: Register an account
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Register
+      tags:
+      - user
+  /api/subscribe/:id:
+    post:
+      consumes:
+      - application/json
+      description: Subscribe to newsletter
+      parameters:
+      - description: Newsletter ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.NewsletterSubscriptionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.NewsletterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Subscribe
+      tags:
+      - user
+  /api/unsubscribe/:id/:email:
+    get:
+      consumes:
+      - application/json
+      description: Unsubscribe from newsletter
+      parameters:
+      - description: Newsletter ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Base64 encoded email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.NewsletterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Unsubscribe
+      tags:
+      - user
+securityDefinitions:
+  BasicAuth, JWT:
+    type: basic
+swagger: "2.0"
