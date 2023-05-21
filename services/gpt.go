@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	openai "github.com/sashabaranov/go-openai"
+	"github.com/sashabaranov/go-openai"
 	"log"
 	"os"
 )
@@ -39,9 +39,8 @@ func SendPrompt(prompt string) (string, error) {
 		Content: prompt,
 	}
 	messages = append(messages, oPrompt)
+	// TODO Find a better way to handle truncated results
 	continues := []string{
-		"please continue",
-		"please continue",
 		"please continue",
 	}
 	for _, p := range continues {
@@ -59,11 +58,11 @@ func SendPrompt(prompt string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	c := GetContentFromResponse(res)
+	c := getContentFromResponse(res)
 	return c, nil
 }
 
-func GetContentFromResponse(response openai.ChatCompletionResponse) string {
+func getContentFromResponse(response openai.ChatCompletionResponse) string {
 	content := response.Choices[0].Message.Content
 	return content
 }

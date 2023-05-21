@@ -31,7 +31,6 @@ func main() {
 	if dotEnvErr != nil {
 		log.Fatalf("Error loading .env file")
 	}
-
 	models.ConnectFirestore()
 	services.InitSendGrid()
 	services.InitChatGpt()
