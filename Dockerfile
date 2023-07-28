@@ -21,7 +21,7 @@ RUN go build -o main .
 
 FROM golang:1.20.4-alpine as runtime
 
-COPY --from=0 /app/main ./
+COPY --from=build /app/main ./
 
 # Expose port 8080 to the outside world
 EXPOSE 8080
