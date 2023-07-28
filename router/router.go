@@ -38,9 +38,9 @@ func SetupSwagger() {
 
 func SetupCors() {
 
-	// Allows all. Should update when in prod/test/local
-	// config := cors.DefaultConfig()
-	// config.AllowAllOrigins = true
-	// router.Use(cors.New(config))
+	// TODO Allows all. Should update when in prod/test/local
+	//config := cors.DefaultConfig()
+	//config.AllowAllOrigins = true
+	//router.Use(cors.New(config))
 	r.Use(cors.Default())
 }
