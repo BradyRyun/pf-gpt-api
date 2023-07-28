@@ -1,4 +1,4 @@
-# STRV Newsletter API
+# Personal Finance Plan API
 
 
 ## Requirements

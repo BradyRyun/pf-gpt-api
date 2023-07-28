@@ -1,5 +1,5 @@
 # Start from the latest Golang base image
-FROM golang:1.20.4-alpine
+FROM golang:1.20.4-alpine as build
 
 # Add Maintainer Info
 LABEL maintainer="Brady Ryun <brady@ryunengineering.com>"
@@ -18,6 +18,10 @@ COPY . .
 
 # Build the Go app
 RUN go build -o main .
+
+FROM golang:1.20.4-alpine as runtime
+
+COPY --from=0 /app/main ./
 
 # Expose port 8080 to the outside world
 EXPOSE 8080
