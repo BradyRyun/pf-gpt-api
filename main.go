@@ -29,7 +29,7 @@ func main() {
 	dotEnvErr := godotenv.Load(".env")
 
 	if dotEnvErr != nil {
-		log.Fatalf("Error loading .env file")
+		log.Print("Error loading .env file")
 	}
 	models.ConnectFirestore()
 	services.InitSendGrid()

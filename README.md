@@ -28,22 +28,15 @@ You can try running through the <strong>very</strong> useful [docs](https://fire
 5. Save that key as `service-account.json` at the root of the project
 ## Build
 ```bash
-
-## Bare Metal
+#### Running on local machine
 # Linux
-go build -o bin/strv-newsletter-api
-./bin/strv-newsletter-api
+go build -o pf-api
+./pf-api
 # Windows
-go build -o bin/strv-newsletter-api.exe
-./bin/strv-newsletter-api.exe
+go build -o pf-api.exe
+./pf-api.exe
 
 ## Docker
-docker build -t newsletter-api .
-docker-compose --env-file .env.docker up -d
+docker build -t pf-api .
+docker run -v $PWD/.env:/app/.env -v $PWD/service-account.json:/app/service-account.json pf-api
 ```
-
-
-### Local Development
-
-I'd recommend commenting out the `app` section in the docker-compose file and running the postgres database while you work on the API in the bare metal environment. This worked well for me. I used DataGrip and Goland to debug & update database entries quickly.
-There is a Postman collection that can be shared to show 
